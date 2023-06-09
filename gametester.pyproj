@@ -25,12 +25,16 @@
     <Compile Include="map.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="gui.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="player.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="graphicsEngine.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="playerFPDC.py" />
     <Compile Include="textureMapping.py">
       <SubType>Code</SubType>
     </Compile>

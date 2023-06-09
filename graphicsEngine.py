@@ -98,9 +98,8 @@ class RayCasting:
             #pg.draw.line(self._game._screen, 'red',(100*oX, 100*oY),                                              
             #             (100*oX + 100*depth*math.cos(rayAngle), 100*oY + 100*depth*math.sin(rayAngle)),2) #test draw for rays
 
-            #color = 255/(1+ depth * depth *0.00001) #fornmula for calculating colors, no idea.
-            #colorAll = (color,color,color)
-            #pg.draw.rect(self._game._screen, colorAll, 
+            #color = (255/(1+ depth** 5 *0.00002),255/(1+ depth** 5 *0.00002),255/(1+ depth** 5 *0.00002)) #formula for calculating colors, no idea.
+            #pg.draw.rect(self._game._screen, color, 
             #             (ray*TEXTURE_SCALE, HEIGHT//2 - projectionHeight//2, TEXTURE_SCALE, projectionHeight))
             self._rayCastingRecord.append((depth, projectionHeight,texture,offset))
 

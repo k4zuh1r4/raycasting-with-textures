@@ -13,7 +13,7 @@ class MainGame:
         self._screen = pg.display.set_mode(RESOLUTION)
         self._clock = pg.time.Clock()
         self._runState = True
-        self._deltaTime = 1        
+        self._deltaTime = 1    
         self.gameLoad()
     def gameLoad(self):
         self._map = MapHandler(self)
@@ -28,10 +28,10 @@ class MainGame:
         pg.display.set_caption(f'{self._clock.get_fps() :.1f}') #display framerate on screen
     def drawLoop(self):
         self._screen.fill((67,67,67), rect=(0,0,WIDTH,HEIGHT/2))
-        self._screen.fill((108,32,43), rect=(0,HEIGHT/2,WIDTH,HEIGHT/2))
-        self._textureHandling.graphicsDraw()
-        #self._map.drawMap()
-        #self._player.playerDraw()
+        self._screen.fill((67,67,67), rect=(0,HEIGHT/2,WIDTH,HEIGHT/2))
+        #self._textureHandling.graphicsDraw()
+        self._map.drawMap()
+        self._player.playerDraw()
     def eventHandler(self):
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key ==pg.K_ESCAPE):
@@ -39,10 +39,9 @@ class MainGame:
                 sys.exit()
     def execution(self):
         while self._runState == True:
-            self.eventHandler()
             self.updateLoop()
             self.drawLoop()
-
+            self.eventHandler()
 if __name__ == '__main__':
     gameExec = MainGame()
     gameExec.execution()
