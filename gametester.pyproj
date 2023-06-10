@@ -31,7 +31,7 @@
     <Compile Include="module1.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="module2.py">
+    <Compile Include="spriteMapping.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="spritesHandling.py">
