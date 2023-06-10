@@ -25,10 +25,10 @@ class Player:
         if  _movementEvent[pg.K_d]:
             dx += speedCos                                                      
             dy += -speedSin
-        if  _movementEvent[pg.K_LEFT]:
-            self._playerAngle -= self.game._deltaTime*PLAYER_ROTATION_SPEED
-        if  _movementEvent[pg.K_RIGHT]:
-            self._playerAngle += self.game._deltaTime*PLAYER_ROTATION_SPEED
+        #if  _movementEvent[pg.K_LEFT]:
+            #self._playerAngle -= self.game._deltaTime*PLAYER_ROTATION_SPEED
+        #if  _movementEvent[pg.K_RIGHT]:
+            #self._playerAngle += self.game._deltaTime*PLAYER_ROTATION_SPEED
         self._playerAngle %= math.tau #2*pi                                                 
         self.collisionCheck(dx,dy)
     def wallCheck(self, x,y):
@@ -42,8 +42,16 @@ class Player:
         pg.draw.line(self.game._screen, 'green',(self._playerPosX*100, self._playerPosY*100),
                      ((self._playerPosX*100 + WIDTH*math.cos(self._playerAngle)),(self._playerPosY*100 + WIDTH*math.sin(self._playerAngle))), 2)
         pg.draw.circle(self.game._screen, 'yellow',(self._playerPosX*100, self._playerPosY*100), 15)
+    def mouseSupport(self):
+        mouseX, mouseY = pg.mouse.get_pos()
+        if mouseX < MOUSE_LEFT_BORDER or mouseX > MOUSE_RIGHT_BORDER:
+            pg.mouse.set_pos([WIDTH//2, HEIGHT//2])
+        self._deltaMovement = pg.mouse.get_rel()[0]
+        self._deltaMovement = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self._deltaMovement))
+        self._playerAngle += self._deltaMovement*MOUSE_SENSITIVITY*self.game._deltaTime
     def movementUpdate(self):
         self.movement()
+        self.mouseSupport()
     @property
     def pos(self):
         return self._playerPosX, self._playerPosY 

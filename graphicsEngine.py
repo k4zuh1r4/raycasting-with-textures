@@ -71,7 +71,7 @@ class RayCasting:
                 verticalFloorTiles = int(verticalX), int(verticalY)
                 if verticalTiles in self._game._map._convertedMap:  
                     verticalTextures = self._game._map._convertedMap[verticalTiles]
-                    break
+                    break 
                 if verticalFloorTiles in self._game._map._convertedFloor:
                     verticalFloorTiles = self._game._map._convertedFloor[verticalFloorTiles]
                     break

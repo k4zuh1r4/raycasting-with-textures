@@ -25,10 +25,10 @@ class MapHandler:
             for i, value in enumerate(row):
                 if value >= 1:
                     self._convertedMap[(i,j)] = value #assign tiled maps into _worldMap dictionary with coords
-        for floorJ, floorRow in enumerate(self._testMap): #intended for floorcasting
-            for floorI, floorValue in enumerate(floorRow):
-                if floorValue == 0:
-                    self._convertedFloor[(i,j)] = floorValue
+        #for floorJ, floorRow in enumerate(self._testMap): #intended for floorcasting
+            #for floorI, floorValue in enumerate(floorRow):
+                #if floorValue == 0:
+                    #self._convertedFloor[(floorI,floorJ)] = floorValue
     def drawMap(self):
         for pos in self._convertedMap:       
             pg.draw.rect(self._game._screen, 'darkgray',(pos[0] * 100, pos[1] * 100, 100, 100), 2) #100x100 WxH, 2 pixels border, position calculated using pos[0]*100, pos[1]*100

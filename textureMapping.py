@@ -9,8 +9,8 @@ class GraphicsRendering:
     def graphicsDraw(self):
         self.wallRendering()
     def wallRendering(self):
-        wallMap = self._game._rayCasting._renderingTarget
-        for depth,image, position in wallMap:
+        renderMap = sorted(self._game._rayCasting._renderingTarget,key=lambda t: t[0], reverse=True)
+        for depth,image, position in renderMap:
             self._screen.blit(image,position)                     
     @staticmethod
     def textureGrab(path, resolution =(TEXTURE_SIZE, TEXTURE_SIZE)): #texture res = texture size^2, a fucking square.

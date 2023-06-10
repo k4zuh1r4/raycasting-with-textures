@@ -7,6 +7,7 @@ from map import *
 from player import *
 from graphicsEngine import *
 from textureMapping import *
+from spritesHandling import *
 class MainGame:
     def __init__(self):
         pg.init()
@@ -20,18 +21,22 @@ class MainGame:
         self._player = Player(self)
         self._textureHandling = GraphicsRendering(self)
         self._rayCasting = RayCasting(self)
+        #self._staticSprites = StaticSpriteHandler(self)
+        #self._animatedSprites = AnimatedSpritesHandler(self)
     def updateLoop(self):
         self._player.movementUpdate()
         self._rayCasting.engineUpdate()
+        self._staticSprites.spriteUpdate()
+        self._animatedSprites.update()
         pg.display.flip()
         self._deltaTime = self._clock.tick(FRAMERATE)
         pg.display.set_caption(f'{self._clock.get_fps() :.1f}') #display framerate on screen
     def drawLoop(self):
         self._screen.fill((67,67,67), rect=(0,0,WIDTH,HEIGHT/2))
         self._screen.fill((67,67,67), rect=(0,HEIGHT/2,WIDTH,HEIGHT/2))
-        #self._textureHandling.graphicsDraw()
-        self._map.drawMap()
-        self._player.playerDraw()
+        self._textureHandling.graphicsDraw()
+        #self._map.drawMap()
+        #self._player.playerDraw()
     def eventHandler(self):
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key ==pg.K_ESCAPE):

@@ -8,10 +8,8 @@ class Player:
         self._playerPosX, self._playerPosY = PLAYER_POS
         self._playerAngle = PLAYER_ANGLE
         self.last_input_time = time.time()
-
     def movement(self):
         current_time = time.time()
-
         if current_time - self.last_input_time >= 0.1:
             dx, dy = 0, 0
             _movementEvent = pg.key.get_pressed()          
@@ -28,14 +26,13 @@ class Player:
             self._playerAngle %= math.tau
             self.collisionCheck(dx, dy)
             self.last_input_time = current_time
-
     def wallCheck(self, x, y):
         return False if (x, y) in self.game._map._convertedMap else True
-
     def collisionCheck(self, dx, dy):
-        if self.wallCheck(int(self._playerPosX + dx), int(self._playerPosY)):
+        hitboxLimitScale = PLAYER_SIZE_SCALE / self.game._deltaTime
+        if self.wallCheck(int(self._playerPosX + dx*hitboxLimitScale), int(self._playerPosY)):
             self._playerPosX += dx
-        if self.wallCheck(int(self._playerPosX), int(self._playerPosY + dy)):
+        if self.wallCheck(int(self._playerPosX), int(self._playerPosY + dy*hitboxLimitScale)):
             self._playerPosY += dy
     def playerDraw(self):
         pg.draw.line(self.game._screen, 'green',(self._playerPosX*100, self._playerPosY*100),
