@@ -1,72 +1,76 @@
 import pygame as pg
-import math
+from settings import *
 import os
 from collections import deque
-from settings import *
-class StaticSpriteHandler:
-    def __init__(self, game, path='resources/sprites/static_sprites/BARREL_1.png', pos=(10.5,3.5), scale = 0.6, shift =0.27):
-        self._game = game
-        self._playerSprite = game._player
+class StaticSprite:
+    def __init__(self, game, path, pos, scale=0.7, shift=0.27):
+        self.game = game
+        self.player = game._player
         self.x, self.y = pos
-        self._spriteImage = pg.image.load(path).convert_alpha()
-        self._spriteWidth = self._spriteImage.get_width()
-        self._halfSpriteWidth = self._spriteImage.get_width()//2
-        self._spriteRatio = self._spriteWidth/self._spriteImage.get_height()
-        self.dx, self.dy, self._thetaAngle, self._screenSpriteX, self._spriteDistance, self._trueSpriteDistance = 0,0,0,0,1,1
-        self._spriteScale = scale
-        self._sprightHeightShift = shift
+        self.image = pg.image.load(path).convert_alpha()
+        self.IMAGE_WIDTH = self.image.get_width()
+        self.IMAGE_HALF_WIDTH = self.image.get_width() // 2
+        self.IMAGE_RATIO = self.IMAGE_WIDTH / self.image.get_height()
+        self.dx, self.dy, self.theta, self.screenX, self.dist, self.normalDist = 0, 0, 0, 0, 1, 1
+        self.spriteHalfWidth = 0
+        self.SPRITE_SCALE = scale
+        self.SPRITE_HEIGHT_SHIFT = shift
     def getSpriteProjection(self):
-        projectionSprite = SCREEN_DISTANCE / self._spriteDistance*self._spriteScale # = projectionSpriteHeight
-        projectionSpriteWidth,projectionSpriteHeight = (projectionSprite*self._spriteRatio),(projectionSprite) 
-        transformedSpriteImage = pg.transform.scale(self._spriteImage,(projectionSpriteWidth,projectionSprite))
-        heightShift = projectionSpriteHeight*self._sprightHeightShift
-        spritePosition = (self._screenSpriteX - (projectionSpriteWidth//2)), ((HEIGHT//2) - projectionSprite//2 +heightShift)        
-        self._game._rayCasting._renderingTarget.append((self._trueSpriteDistance,transformedSpriteImage,spritePosition))
+        projectionSprite = SCREEN_DISTANCE / self.normalDist * self.SPRITE_SCALE
+        projectionSpriteWidth, projectionSpriteHeight = projectionSprite * self.IMAGE_RATIO, projectionSprite
+        image = pg.transform.scale(self.image, (projectionSpriteWidth, projectionSpriteHeight))
+        self.spriteHalfWidth = projectionSprite // 2
+        heightShift = projectionSpriteHeight * self.SPRITE_HEIGHT_SHIFT
+        pos = self.screenX - self.spriteHalfWidth, HEIGHT//2 - projectionSpriteHeight // 2 + heightShift
+        self.game._rayCasting._renderingTarget.append((self.normalDist, image, pos))
     def getSprite(self):
-        dx = self.x - self._playerSprite._playerPosX
-        dy = self.y - self._playerSprite._playerPosY
+        dx = self.x - self.player._playerPosX
+        dy = self.y - self.player._playerPosY
         self.dx, self.dy = dx, dy
-        self._thetaAngle = math.atan2(dy,dx)
-        deltaSpriteAngle = self._thetaAngle - self._playerSprite._playerAngle
-        if (dx > 0 and self._playerSprite._playerAngle > math.pi) or (dx <0 and dy<0):
-            deltaSpriteAngle += math.tau
-        deltaRays = deltaSpriteAngle/DELTA_ANGLE
-        self._screenSpriteX = (RAY_AMOUNT//2 + deltaRays)* TEXTURE_SCALE
-        self._spriteDistance = math.hypot(dx, dy)
-        self._trueSpriteDistance =self._spriteDistance*math.cos(deltaSpriteAngle) #fishbowl removal.
-        if -self._spriteWidth//2 < self._screenSpriteX < (WIDTH + self._halfSpriteWidth) and self._trueSpriteDistance > 0.5:
+        self.theta = math.atan2(dy, dx)
+
+        delta = self.theta - self.player._playerAngle
+        if (dx > 0 and self.player._playerAngle > math.pi) or (dx < 0 and dy < 0):
+            delta += math.tau
+        deltaRays = delta / DELTA_ANGLE
+        self.screenX = ((RAY_AMOUNT//2) + deltaRays) * TEXTURE_SCALE
+        self.dist = math.hypot(dx, dy)
+        self.normalDist = self.dist * math.cos(delta)
+        if -self.IMAGE_HALF_WIDTH < self.screenX < (WIDTH + self.IMAGE_HALF_WIDTH) and self.normalDist > 0.5:
             self.getSpriteProjection()
-    def spriteUpdate(self):
+    def update(self):
         self.getSprite()
 
-class AnimatedSpritesHandler(StaticSpriteHandler):
-    def __init__(self, game, path = 'resources/sprites/animated_sprites/green_light/0.png', pos =(14.5,3.5), scale = 0.8, shift = 0.15, animationTime = 120):
-        super().__init__(game,path,pos,scale,shift)
-        self._animationTime = animationTime
-        self.path = path.rsplit('/',1)[0]
-        self._AniSpriteImages = self.getAniSprite(self.path)
-        self._animationPrevTicks = pg.time.get_ticks()
-        self._animationTrigger = False
+class AnimatedSprite(StaticSprite):
+    def __init__(self, game, path, pos=(11.5, 3.5), scale=0.8, shift=0.16, animationTime=120):
+        super().__init__(game, path, pos, scale, shift)
+        self.animationTime = animationTime
+        self.path = path.rsplit('/', 1)[0]
+        self.images = self.getImages(self.path)
+        self.animationTimePrev = pg.time.get_ticks()
+        self.animationTrigger = False
+
     def update(self):
-        super().spriteUpdate()
+        super().update()
         self.checkAnimationTime()
-        self.animate(self._AniSpriteImages)
+        self.animate(self.images)
+
     def animate(self, images):
-        if self._animationTrigger:
+        if self.animationTrigger:
             images.rotate(-1)
             self.image = images[0]
+
     def checkAnimationTime(self):
-        self._animationTrigger = False
-        currentTime = pg.time.get_ticks()
-        if (currentTime - self._animationPrevTicks) > self._animationTime:
-            self._animationPrevTicks = currentTime
-            self._animationTrigger = True
-    def getAniSprite(self,path):
-        sprites = deque()
+        self.animationTrigger = False
+        currentTime= pg.time.get_ticks()
+        if currentTime - self.animationTimePrev > self.animationTime:
+            self.animationTimePrev = currentTime
+            self.animationTrigger = True
+
+    def getImages(self, path):
+        images = deque()
         for file_name in os.listdir(path):
             if os.path.isfile(os.path.join(path, file_name)):
-                img = pg.image.load(path+ '/' +file_name).convert_alpha()
-                sprites.append(img)
-        return sprites
-
-        
+                img = pg.image.load(path + '/' + file_name).convert_alpha()
+                images.append(img)
+        return images

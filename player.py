@@ -7,6 +7,23 @@ class Player:
         self._playerPosX, self._playerPosY = PLAYER_POS
         self._playerAngle = PLAYER_ANGLE
         self.playerSpeed = PLAYER_SPEED * self.game._deltaTime
+        self._shotState = False
+        self._playerHealth = 100
+    def checkPlayerState(self):
+        if self._playerHealth < 1:
+            self.game._textureHandling.gameOverScreen()
+            pg.time.delay(5000)
+            self.game.gameLoad()
+    def receiveDamage(self, damage):
+        self._playerHealth -= damage
+        self.game._soundHandler._playerDamage.play()
+        self.checkPlayerState()
+    def fireSingleEvent(self,event):
+        if event.type == pg.MOUSEBUTTONDOWN:            
+            if event.button == 1 and self._shotState == False and self.game._weapon._reloadState == False:            
+                self.game._soundHandler._shotgunSFX.play()
+                self._shotState = True            
+                self.game._weapon._reloadState = True
     def movement(self):
         dx, dy = 0,0
         playerSpeed = PLAYER_SPEED * self.game._deltaTime
@@ -14,10 +31,10 @@ class Player:
         speedCos = playerSpeed * math.cos(self._playerAngle)
         speedSin = playerSpeed * math.sin(self._playerAngle)
         if  _movementEvent[pg.K_w]:
-            dx +=speedCos                                                         
+            dx +=speedCos
             dy +=speedSin  
         if  _movementEvent[pg.K_s]:
-            dx += -speedCos                                                          
+            dx += -speedCos                                  
             dy += -speedSin
         if  _movementEvent[pg.K_a]:
             dx += -speedCos                                                                 
@@ -34,7 +51,7 @@ class Player:
     def wallCheck(self, x,y):
         return False if (x,y) in self.game._map._convertedMap else True #return False and disallow player to go through wall when touched the wall coords
     def collisionCheck(self,dx,dy):            
-        if self.wallCheck(int(self._playerPosX + dx),int(self._playerPosY)): #checks for wall in x dimension       
+        if self.wallCheck(int(self._playerPosX + dx),int(self._playerPosY)): #checks for wall in x dimension
             self._playerPosX += dx
         if self.wallCheck(int(self._playerPosX), int(self._playerPosY+ dy)): #checks for wall in y dimension                  
             self._playerPosY += dy

@@ -17,7 +17,7 @@ class RayCasting:
                 wallColumn = pg.transform.scale(wallColumn,(TEXTURE_SCALE, projectionHeight)) #transform into image.          
                 wallPosition = (ray * TEXTURE_SCALE, (HEIGHT//2) - (projectionHeight//2))
             else:
-                textureHeight = TEXTURE_SIZE*HEIGHT/projectionHeight
+                textureHeight = TEXTURE_SIZE*HEIGHT/projectionHeight 
                 wallColumn = self.wallRender[textures].subsurface(offset*(TEXTURE_SIZE- TEXTURE_SCALE), TEXTURE_SIZE//2 - textureHeight//2, TEXTURE_SCALE, textureHeight) #calculates rendering positions of wall and image.
                 wallColumn = pg.transform.scale(wallColumn,(TEXTURE_SCALE, HEIGHT))
                 wallPosition = (ray * TEXTURE_SCALE, 0)

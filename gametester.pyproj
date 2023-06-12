@@ -31,10 +31,19 @@
     <Compile Include="module1.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="spriteMapping.py">
+    <Compile Include="npc.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="sfx.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="weapons.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="spritesHandling.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="spriteMapping.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="player.py">
